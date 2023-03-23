@@ -1,3 +1,4 @@
+#![feature(binary_heap_retain)]
 //! Implements the A* pathfinding algorithm non-generically over a grid where
 //! emptty spaces are `None` and occupied spaces are `Some(())`. Pathfinding
 //! only look in the four cardinal directions (north, south, east, west) and
@@ -69,6 +70,11 @@ pub fn astar(grid: &Grid, start: Point, end: Point) -> Option<Vec<Point>> {
 
                 // If the neighbor is not in the open set, we add it.
                 if !open_nodes.iter().any(|node| node == &neighbor) {
+                    open_nodes.push(neighbor);
+                } else {
+                    // ...otherwise, we update the neighbor in the open set by
+                    // swapping the values.
+                    open_nodes.retain(|n| n == &neighbor);
                     open_nodes.push(neighbor);
                 }
             }
