@@ -51,13 +51,5 @@ fn small_grid(c: &mut Criterion) {
     group.bench_function("astar 100x100", |b| b.iter(|| astar(&grid, start, end)));
 }
 
-fn large_grid(c: &mut Criterion) {
-    let (grid, start, end) = setup(256, 256);
-    let mut group = c.benchmark_group("average path");
-    group.sample_size(10);
-
-    group.bench_function("astar 256x256", |b| b.iter(|| astar(&grid, start, end)));
-}
-
-criterion_group!(benches, very_small_grid, small_grid, large_grid);
+criterion_group!(benches, very_small_grid, small_grid);
 criterion_main!(benches);

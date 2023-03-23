@@ -66,9 +66,8 @@ command `cargo run --example <example_name>`.
 <!-- markdownlint-disable -->
 | Example | File                                    | Description                                                              | 
 |---------|-----------------------------------------|--------------------------------------------------------------------------|
-| random_30 | __[random_30.rs](/examples/random_30.rs)__   | Generate a 30x30 map with random walls and find the path from top left to bottom right. |                    
-| random_100 | __[random_100.rs](/examples/random_100.rs)__   | Generate a 100x100 map with random walls and find the path from top left to bottom right. |
-| random_256 | __[random_256.rs](/examples/random_256.rs)__   | Generate a 256x256 map with random walls and find the path from top left to bottom. |
+| random_30 | __[random_30.rs](/examples/random_30.rs)__   | Generate a 30x30 map with random walls and a random start and end point. |                    
+| random_100 | __[random_100.rs](/examples/random_100.rs)__   | Generate a 100x100 map with random walls and a random start and end point. |
 <!-- markdownlint-enable -->
 
 ## Benchmarks

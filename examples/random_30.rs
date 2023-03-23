@@ -1,19 +1,30 @@
 use iridescent::{Styled, GREEN, RED};
+use rand::{thread_rng, Rng};
 use seastar::{astar, Point};
 
 fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
     let mut grid: Vec<Vec<Option<()>>> = Vec::with_capacity(h);
 
+    let mut rng = thread_rng();
+    let start = Point {
+        x: rng.gen_range(0..w) as isize,
+        y: rng.gen_range(0..h) as isize,
+    };
+    let end = Point {
+        x: rng.gen_range(0..w) as isize,
+        y: rng.gen_range(0..h) as isize,
+    };
+
     for i in 0..h {
         grid.push(Vec::with_capacity(w));
         for j in 0..w {
             let rng = rand::random::<f32>();
-            if i == 0 && j == 0 {
+            if i == start.x as usize && j == start.y as usize {
                 grid[i].push(None);
                 continue;
             }
 
-            if i == h - 1 && j == w - 1 {
+            if i == end.x as usize && j == end.y as usize {
                 grid[i].push(None);
                 continue;
             }
@@ -26,12 +37,6 @@ fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
         }
     }
 
-    let start = Point { x: 0, y: 0 };
-    let end = Point {
-        x: h as isize - 1,
-        y: w as isize - 1,
-    };
-
     (grid, start, end)
 }
 
@@ -39,21 +44,24 @@ fn main() {
     let (grid, start, end) = setup(30, 30);
     let now = std::time::Instant::now();
 
+    println!("Start: {:?}", start);
+    println!("End: {:?}", end);
+
     if let Some(path) = astar(&grid, start, end) {
         let elapsed = now.elapsed();
-        for x in 0..grid.len() {
-            for y in 0..grid[x].len() {
-                if grid[x][y].is_some() {
+        for i in 0..grid.len() {
+            for j in 0..grid[i].len() {
+                if grid[i][j].is_some() {
                     print!("#");
                 } else if path.contains(&Point {
-                    x: x as isize,
-                    y: y as isize,
+                    x: i as isize,
+                    y: j as isize,
                 }) {
-                    if x == 0 && y == 0 {
+                    if i == start.x as usize && j == start.y as usize {
                         print!("{}", "S".foreground(RED));
                         continue;
                     }
-                    if x == grid.len() - 1 && y == grid[x].len() - 1 {
+                    if i == end.x as usize && j == end.y as usize {
                         print!("{}", "E".foreground(RED));
                         continue;
                     }
@@ -67,6 +75,21 @@ fn main() {
 
         println!("Estimated Duration: {:?}", elapsed);
     } else {
+        for i in 0..grid.len() {
+            for j in 0..grid[i].len() {
+                if i == start.x as usize && j == start.y as usize {
+                    print!("{}", "S".foreground(RED));
+                } else if i == end.x as usize && j == end.y as usize {
+                    print!("{}", "E".foreground(RED));
+                } else if grid[i][j].is_some() {
+                    print!("#");
+                } else {
+                    print!("{}", ".".dim());
+                }
+            }
+            println!();
+        }
+
         println!("No path found!");
     }
 }
