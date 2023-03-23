@@ -1,8 +1,5 @@
+#![doc = include_str!("../README.md")]
 #![feature(binary_heap_retain)]
-//! Implements the A* pathfinding algorithm non-generically over a grid where
-//! emptty spaces are `None` and occupied spaces are `Some(())`. Pathfinding
-//! only look in the four cardinal directions (north, south, east, west) and
-//! does not consider diagonal movement.
 pub mod node;
 
 use std::collections::{BinaryHeap, HashSet};
