@@ -7,7 +7,7 @@ license = "MIT OR Apache-2.0"
 description = "Dependency-free, non-generic implementation of the A* pathfinding algorithm."
 repository = "https://github.com/robertwayne/seastar"
 categories = ["algorithms"]
-keywords = ["a-star", "pathfinding", "astar", "a*"]
+keywords = ["a-star", "pathfinding", "astar"]
 readme = "README.md"
 
 [dev-dependencies]
