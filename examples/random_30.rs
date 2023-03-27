@@ -6,20 +6,31 @@ fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
     let mut grid: Vec<Vec<Option<()>>> = Vec::with_capacity(h);
 
     let mut rng = thread_rng();
+
     let start = Point {
         x: rng.gen_range(0..w as isize),
         y: rng.gen_range(0..h as isize),
     };
+
     let end = Point {
         x: rng.gen_range(0..w as isize),
         y: rng.gen_range(0..h as isize),
     };
 
-    // Draw the grid.
-    for _ in 0..h {
+    for y in 0..h {
         let mut row = Vec::with_capacity(w);
-        for _ in 0..w {
-            row.push(if rng.gen_bool(0.2) { Some(()) } else { None });
+        for x in 0..w {
+            if rng.gen_bool(0.2) {
+                if x == start.x as usize && y == start.y as usize {
+                    row.push(None);
+                } else if x == end.x as usize && y == end.y as usize {
+                    row.push(None);
+                } else {
+                    row.push(Some(()));
+                }
+            } else {
+                row.push(None);
+            }
         }
         grid.push(row);
     }
@@ -27,56 +38,62 @@ fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
     (grid, start, end)
 }
 
+fn draw_grid(grid: &Vec<Vec<Option<()>>>, path: Option<&Vec<Point>>) {
+    if let Some(path) = path {
+        for (y, row) in grid.iter().enumerate() {
+            for (x, cell) in row.iter().enumerate() {
+                if path.contains(&Point {
+                    x: x as isize,
+                    y: y as isize,
+                }) {
+                    if x == path[0].x as usize && y == path[0].y as usize {
+                        print!("{}", "S".foreground(RED));
+                    } else if x == path[path.len() - 1].x as usize
+                        && y == path[path.len() - 1].y as usize
+                    {
+                        print!("{}", "E".foreground(RED));
+                    } else {
+                        print!("{}", "o".foreground(GREEN));
+                    }
+                } else if cell.is_some() {
+                    print!("#");
+                } else {
+                    print!("{}", ".".dim());
+                }
+            }
+            println!();
+        }
+    } else {
+        for (y, row) in grid.iter().enumerate() {
+            for (x, cell) in row.iter().enumerate() {
+                if cell.is_some() {
+                    print!("#");
+                } else {
+                    if x == 0 && y == 0 {
+                        print!("{}", "S".foreground(RED));
+                    } else if x == grid[0].len() - 1 && y == grid.len() - 1 {
+                        print!("{}", "E".foreground(RED));
+                    } else {
+                        print!("{}", ".".dim());
+                    }
+                }
+            }
+            println!();
+        }
+    }
+}
+
 fn main() {
     let (grid, start, end) = setup(30, 30);
     let now = std::time::Instant::now();
 
-    println!("Start: {:?}", start);
-    println!("End: {:?}", end);
-
     if let Some(path) = astar(&grid, start, end) {
         let elapsed = now.elapsed();
-        for i in 0..grid.len() {
-            for j in 0..grid[i].len() {
-                if grid[i][j].is_some() {
-                    print!("#");
-                } else if path.contains(&Point {
-                    x: i as isize,
-                    y: j as isize,
-                }) {
-                    if i == start.x as usize && j == start.y as usize {
-                        print!("{}", "S".foreground(RED));
-                        continue;
-                    }
-                    if i == end.x as usize && j == end.y as usize {
-                        print!("{}", "E".foreground(RED));
-                        continue;
-                    }
-                    print!("{}", "o".foreground(GREEN));
-                } else {
-                    print!("{}", ".".dim());
-                }
-            }
-            println!();
-        }
+        draw_grid(&grid, Some(&path));
 
         println!("Estimated Duration: {:?}", elapsed);
     } else {
-        for i in 0..grid.len() {
-            for j in 0..grid[i].len() {
-                if i == start.x as usize && j == start.y as usize {
-                    print!("{}", "S".foreground(RED));
-                } else if i == end.x as usize && j == end.y as usize {
-                    print!("{}", "E".foreground(RED));
-                } else if grid[i][j].is_some() {
-                    print!("#");
-                } else {
-                    print!("{}", ".".dim());
-                }
-            }
-            println!();
-        }
-
+        draw_grid(&grid, None);
         println!("No path found!");
     }
 }
