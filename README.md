@@ -19,8 +19,7 @@
 
 `seastar` is a dependency-free, non-generic implementation of the __[A*
 pathfinding](https://en.wikipedia.org/wiki/A*_search_algorithm)__ algorithm. It
-is specifically designed to operate over a 2D grid of tiles in cardinal
-directions _(North, East, South, West)_.
+is specifically designed to operate over unform-cost, 2D grids.
 
 You can check out the library in action at
 __[seastar.sombia.com](https://seastar.sombia.com/)__.
@@ -76,7 +75,7 @@ command `cargo run --example <example_name>`.
 <!-- markdownlint-disable -->
 | Flag     | Default  | Description                                                                         | Dependencies |
 |----------|----------|-------------------------------------------------------------------------------------|--------------|
-| `serde` | Disabled | Adds `Serialize`, `Deserialize` derives for `Point` | `serde` |
+| `serde` | Disabled | Adds `Serialize`, `Deserialize` derives for `Point`. | `serde` |
 <!-- markdownlint-enable -->
 
 ## Benchmarks
