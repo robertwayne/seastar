@@ -39,6 +39,7 @@ cargo add seastar
 ```
 
 ```rust
+use seastar::{astar, Point};
 
 fn main() {
     // A grid needs to be a 2D vector of `Option`s. `None` represents an
@@ -47,18 +48,17 @@ fn main() {
         vec![None, None, Some(())],
         vec![Some(()), None, None],
         vec![None, None, None],
-    ]
+    ];
 
     let start = Point { x: 0, y: 0 }; // top left corner
     let end = Point { x: 2, y: 2 }; // bottom right corner
 
     // Assuming a path is found, `path` will be a `Vec<Point>` where each point is
     // a step in the path from `start` to `end`.
-    if let Some(path) = astar(&grid, &start, &end) {
+    if let Some(path) = astar(&grid, start, end) {
         // ...do whatever you want with the path!
     }
 }
-
 ```
 
 ## Examples
