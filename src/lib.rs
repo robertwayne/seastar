@@ -125,7 +125,7 @@ pub fn get_neighbors(grid: &Grid, node: &Node) -> Vec<Node> {
         }
 
         // If the grid position is None, it's a valid neighbor.
-        if grid[*x as usize][*y as usize].is_none() {
+        if grid[*y as usize][*x as usize].is_none() {
             neighbors.push(Node {
                 x: *x,
                 y: *y,
@@ -139,11 +139,12 @@ pub fn get_neighbors(grid: &Grid, node: &Node) -> Vec<Node> {
     neighbors
 }
 
+#[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
     fn test_valid_path() {
-        use super::*;
-
         #[rustfmt::skip]
         let grid = vec![
             vec![None,     None, None],
@@ -160,9 +161,9 @@ mod tests {
             path,
             vec![
                 start,
-                Point::new(0, 1),
+                Point::new(1, 0),
                 Point::new(1, 1),
-                Point::new(2, 1),
+                Point::new(1, 2),
                 end
             ]
         );
@@ -170,8 +171,6 @@ mod tests {
 
     #[test]
     fn test_no_valid_path() {
-        use super::*;
-
         #[rustfmt::skip]
         let grid = vec![
             vec![None, None,     None],
@@ -189,8 +188,6 @@ mod tests {
 
     #[test]
     fn test_collidable_neighbors() {
-        use super::*;
-
         #[rustfmt::skip]
         let grid = vec![
             vec![None,     None, None],
@@ -213,8 +210,6 @@ mod tests {
 
     #[test]
     fn test_distance() {
-        use super::*;
-
         let node1 = Node::new(0, 0);
         let node2 = Node::new(1, 1);
         let node3 = Node::new(2, 2);
@@ -222,5 +217,44 @@ mod tests {
         assert_eq!(distance(&node1, &node2), 2);
         assert_eq!(distance(&node1, &node3), 4);
         assert_eq!(distance(&node2, &node3), 2);
+    }
+
+    #[test]
+    fn test_get_shortest() {
+        use super::*;
+
+        #[rustfmt::skip]
+        let grid = vec![
+            vec![None,     None,     None,     None,     None,],
+            vec![Some(()), Some(()), Some(()), None,     None],
+            vec![None,     None,     None,     None,     None],
+            vec![None,     Some(()), Some(()), Some(()), Some(())],
+            vec![None,     None,     None,     None,     None],
+        ];
+
+        let start = Point::new(0, 0);
+        let end = Point::new(4, 4);
+
+        let path = astar(&grid, start, end);
+
+        assert!(
+            path == Some(vec![
+                start,
+                Point::new(1, 0),
+                Point::new(2, 0),
+                Point::new(3, 0),
+                Point::new(3, 1),
+                Point::new(3, 2),
+                Point::new(2, 2),
+                Point::new(1, 2),
+                Point::new(0, 2),
+                Point::new(0, 3),
+                Point::new(0, 4),
+                Point::new(1, 4),
+                Point::new(2, 4),
+                Point::new(3, 4),
+                end,
+            ])
+        );
     }
 }
