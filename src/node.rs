@@ -10,6 +10,13 @@ use crate::Point;
 /// have a `g` and `h` cost, which are used to calculate the f-cost.
 /// Additionally, each node has a parent node, which is used to reconstruct the
 /// path once the end node is found.
+///
+/// The `g` cost is the distance from the start node to the current node. The
+/// `h` cost is the distance from the current node to the end node. The `f` cost
+/// is the sum of the `g` and `h` costs.
+///
+/// You can access the `g` and `h` costs directly, but the `f` cost is
+/// calculated by calling the `.f()` method.
 #[derive(Debug, Clone)]
 pub struct Node {
     pub point: Point,
@@ -29,8 +36,7 @@ impl Node {
         }
     }
 
-    /// Calculates the `f` cost for the node by adding its `g` and `h` costs
-    /// together..
+    /// Calculates the `f` cost, which is the sum of the `g` and `h` costs.
     #[must_use]
     pub fn f(&self) -> isize {
         self.g + self.h
