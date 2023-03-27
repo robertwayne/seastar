@@ -54,27 +54,31 @@ pub fn astar(grid: &Grid, start: Point, end: Point) -> Option<Vec<Point>> {
                 continue;
             }
 
-            // ...otherwise, we calculate the distance to the neighbor.
-            let distance_to = current.g + distance(&current, &neighbor);
-
-            // If the distance to the neighbor is less than the neighbor's
-            // current g-cost, or the neighbor is not in the open set, we update
-            // the neighbor's g-cost and parent.
-            if distance_to < neighbor.g || !open_nodes.iter().any(|node| node == &neighbor) {
-                neighbor.g = distance_to;
-                neighbor.h = distance(&neighbor, &end_node);
-                neighbor.parent = Some(Box::new(current.clone()));
-
-                // If the neighbor is not in the open set, we add it.
-                if !open_nodes.iter().any(|node| node == &neighbor) {
-                    open_nodes.push(neighbor);
-                } else {
-                    // ...otherwise, we update the neighbor in the open set by
-                    // swapping the values.
-                    open_nodes.retain(|n| n == &neighbor);
-                    open_nodes.push(neighbor);
-                }
+            // If any of the neighbors are in the open set, we need to check if
+            // the current path is better than the one we've already found.
+            if open_nodes
+                .iter()
+                .any(|node| node == &neighbor && node.f() < neighbor.f())
+            {
+                continue;
             }
+
+            // Likewise, if the neighbor is in the closed set, we need to check
+            // for the same thing.
+            if closed_nodes
+                .iter()
+                .any(|node| node == &neighbor && node.f() < neighbor.f())
+            {
+                continue;
+            }
+
+            // ...otherwise, we can set the neighbor's g-cost and h-cost, and
+            // add it to the open set.
+            neighbor.g = current.g + distance(&current, &neighbor);
+            neighbor.h = distance(&neighbor, &end_node);
+            neighbor.parent = Some(Box::new(current.clone()));
+
+            open_nodes.push(neighbor);
         }
     }
 
