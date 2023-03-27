@@ -24,6 +24,9 @@ pathfinding](https://en.wikipedia.org/wiki/A*_search_algorithm)__ algorithm. It
 is specifically designed to operate over a 2D grid of tiles in cardinal
 directions _(North, East, South, West)_.
 
+You can check out the library in action at
+__[seastar.sombia.com](https://seastar.sombia.com/)__.
+
 I can't necessarily recommend using this over the
 __[pathfinding](https://github.com/samueltardieu/pathfinding)__ crate, but I
 wanted a different API for my own use-case, as well as a deeper understanding of
