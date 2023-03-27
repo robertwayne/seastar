@@ -7,34 +7,21 @@ fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
 
     let mut rng = thread_rng();
     let start = Point {
-        x: rng.gen_range(0..w) as isize,
-        y: rng.gen_range(0..h) as isize,
+        x: rng.gen_range(0..w as isize),
+        y: rng.gen_range(0..h as isize),
     };
     let end = Point {
-        x: rng.gen_range(0..w) as isize,
-        y: rng.gen_range(0..h) as isize,
+        x: rng.gen_range(0..w as isize),
+        y: rng.gen_range(0..h as isize),
     };
 
-    for i in 0..h {
-        grid.push(Vec::with_capacity(w));
-        for j in 0..w {
-            let rng = rand::random::<f32>();
-            if i == start.x as usize && j == start.y as usize {
-                grid[i].push(None);
-                continue;
-            }
-
-            if i == end.x as usize && j == end.y as usize {
-                grid[i].push(None);
-                continue;
-            }
-
-            if rng < 0.2 {
-                grid[i].push(Some(()));
-            } else {
-                grid[i].push(None);
-            }
+    // Draw the grid.
+    for _ in 0..h {
+        let mut row = Vec::with_capacity(w);
+        for _ in 0..w {
+            row.push(if rng.gen_bool(0.2) { Some(()) } else { None });
         }
+        grid.push(row);
     }
 
     (grid, start, end)

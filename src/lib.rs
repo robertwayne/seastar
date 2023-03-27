@@ -125,7 +125,7 @@ pub fn get_neighbors(grid: &Grid, node: &Node) -> Vec<Node> {
         }
 
         // If the grid position is None, it's a valid neighbor.
-        if grid[*y as usize][*x as usize].is_none() {
+        if grid[*x as usize][*y as usize].is_none() {
             neighbors.push(Node {
                 x: *x,
                 y: *y,
