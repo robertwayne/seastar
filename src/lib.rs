@@ -2,12 +2,17 @@
 #![feature(binary_heap_retain)]
 pub mod node;
 
-use std::collections::{BinaryHeap, HashSet};
+use std::{
+    collections::{BinaryHeap, HashSet},
+    fmt::{Display, Formatter},
+};
 
 use self::node::Node;
 
+/// Alias for a 2D vector of `Option<()>`'s.
 pub type Grid = Vec<Vec<Option<()>>>;
 
+/// Represents an (x, y) coordinate in a grid.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Point {
@@ -22,6 +27,12 @@ impl Point {
     }
 }
 
+impl Display for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
 /// Attempts to find the shorest path from `start` to `end` using the A*
 /// algorithm. Returns `None` if no path is found.
 #[must_use]
@@ -29,8 +40,8 @@ pub fn astar(grid: &Grid, start: Point, end: Point) -> Option<Vec<Point>> {
     let mut open_nodes = BinaryHeap::new();
     let mut closed_nodes = HashSet::new();
 
-    let mut start_node = Node::new(start.x, start.y);
-    let end_node = Node::new(end.x, end.y);
+    let mut start_node = Node::from(start);
+    let end_node = Node::from(end);
 
     // We'll set a starting h-cost on the initial node.
     start_node.h = distance(&start_node, &end_node);
@@ -93,7 +104,7 @@ fn retrace_path(current: Node) -> Vec<Point> {
     let mut current = Some(Box::new(current));
 
     while let Some(node) = current {
-        path.push(Point::new(node.x, node.y));
+        path.push(node.point);
         current = node.parent;
     }
 
@@ -104,8 +115,8 @@ fn retrace_path(current: Node) -> Vec<Point> {
 
 /// Calculates the Manhatten distance between two nodes.
 fn distance(start: &Node, end: &Node) -> isize {
-    let (x1, y1) = (start.x, start.y);
-    let (x2, y2) = (end.x, end.y);
+    let (x1, y1) = (start.point.x, start.point.y);
+    let (x2, y2) = (end.point.x, end.point.y);
 
     (x1 - x2).abs() + (y1 - y2).abs()
 }
@@ -115,7 +126,7 @@ fn distance(start: &Node, end: &Node) -> isize {
 #[must_use]
 pub fn get_neighbors(grid: &Grid, node: &Node) -> Vec<Node> {
     let mut neighbors = Vec::new();
-    let (x, y) = (node.x, node.y);
+    let (x, y) = (node.point.x, node.point.y);
 
     let possible_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)];
 
@@ -127,8 +138,7 @@ pub fn get_neighbors(grid: &Grid, node: &Node) -> Vec<Node> {
         // If the grid position is None, it's a valid neighbor.
         if grid[*y as usize][*x as usize].is_none() {
             neighbors.push(Node {
-                x: *x,
-                y: *y,
+                point: Point::new(*x, *y),
                 g: 0,
                 h: 0,
                 parent: None,
