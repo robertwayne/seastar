@@ -9,6 +9,7 @@ use self::node::Node;
 pub type Grid = Vec<Vec<Option<()>>>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Point {
     pub x: isize,
     pub y: isize,

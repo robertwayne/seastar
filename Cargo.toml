@@ -10,10 +10,17 @@ categories = ["algorithms"]
 keywords = ["a-star", "pathfinding", "astar"]
 readme = "README.md"
 
+[dependencies]
+serde = { version = "1.0", features = ["derive"], optional = true }
+
 [dev-dependencies]
 criterion = { version = "0.4", features = ["html_reports"] }
 iridescent = "0.2"
 rand = "0.8"
+
+[features]
+default = []
+serde = ["dep:serde"]
 
 [[bench]]
 name = "average_path"
