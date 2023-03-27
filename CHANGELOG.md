@@ -7,7 +7,7 @@
 - Added an optional `serde` feature for the `Point` struct.
 - Nodes now use `Point`s to represent their (x, y) coordinates.
 - Nodes now impl `From<Point>` and `Into<Point>`.
-- Added missing more doc comments.
+- Added missing doc comments.
 
 ## 2023.03.23 - v0.1.0
 
