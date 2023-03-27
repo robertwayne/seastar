@@ -17,8 +17,6 @@
 
 ---
 
-## Features
-
 `seastar` is a dependency-free, non-generic implementation of the __[A*
 pathfinding](https://en.wikipedia.org/wiki/A*_search_algorithm)__ algorithm. It
 is specifically designed to operate over a 2D grid of tiles in cardinal
@@ -71,6 +69,14 @@ command `cargo run --example <example_name>`.
 |---------|-----------------------------------------|--------------------------------------------------------------------------|
 | random_30 | __[random_30.rs](/examples/random_30.rs)__   | Generate a 30x30 map with random walls and a random start and end point. |                    
 | random_100 | __[random_100.rs](/examples/random_100.rs)__   | Generate a 100x100 map with random walls and a random start and end point. |
+<!-- markdownlint-enable -->
+
+## Features
+
+<!-- markdownlint-disable -->
+| Flag     | Default  | Description                                                                         | Dependencies |
+|----------|----------|-------------------------------------------------------------------------------------|--------------|
+| `serde` | Disabled | Adds `Serialize`, `Deserialize` derives for `Point` | `serde` |
 <!-- markdownlint-enable -->
 
 ## Benchmarks
