@@ -65,11 +65,7 @@ impl Display for Node {
 
 impl PartialOrd for Node {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        if self.f() == other.f() {
-            Some(other.h.cmp(&self.h))
-        } else {
-            Some(other.f().cmp(&self.f()))
-        }
+        Some(self.cmp(other))
     }
 }
 
