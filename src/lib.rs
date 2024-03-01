@@ -1,5 +1,4 @@
 #![doc = include_str!("../README.md")]
-#![feature(binary_heap_retain)]
 pub mod node;
 
 use std::{
