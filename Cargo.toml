@@ -14,7 +14,7 @@ readme = "README.md"
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [dev-dependencies]
-criterion = { version = "0.4", features = ["html_reports"] }
+criterion = { version = "0.5", features = ["html_reports"] }
 iridescent = "0.2"
 rand = "0.8"
 
