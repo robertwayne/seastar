@@ -71,6 +71,9 @@ As usual, take into account that benchmarks will vary wildly depending on the gr
 the distance between the start and end points, and the distribution of walls. Don't take these as
 perfect indicators of performance given a specific grid size.
 
+Grids are built with a 20% density of obstacles, with randomized start and end points. This results
+in fairly chaotic grids, which may challenge the algorithms performance.
+
 ### Unstable Grids (30s, 50 samples)
 
 _Uses random seeds to give a better indicator of average execution time._
