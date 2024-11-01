@@ -73,23 +73,52 @@ As usual, take into account that benchmarks will vary wildly depending on the gr
 the distance between the start and end points, and the distribution of walls. Don't take these as
 perfect indicators of performance given a specific grid size.
 
-### Stable
+### Unstable Grids (30s, 50 samples)
 
-| Grid Size | Seed                | Time (µs) | Config          |
-|-----------|---------------------|-----------|-----------------|
-| 30x30     | 2210748027404127321 | 6.45      | 3s, 100 samples |
-| 100x100   | 2210748027404127321 | 7.79      | 3s, 100 samples |
-| 30x30     | 8658502531503517188 | 1.07      | 3s, 100 samples |
-| 100x100   | 8658502531503517188 | 37.54     | 3s, 100 samples |
-| 30x30     | 4514647571430385868 | 0.51      | 3s, 100 samples |
-| 100x100   | 4514647571430385868 | 1.33      | 3s, 100 samples |
+_Uses random seeds to give a better indicator of average execution time._
 
-### Unstable
+| Grid Size | Time      |
+|-----------|-----------|
+| 30x30     |   4.56 µs |
+| 100x100   |  30.38 µs |
+| 500x500   | 661.94 µs |
+| 1000x1000 |   3.01 ms |
 
-| Grid Size | Seed   | Time (µs) | Config           |
-|-----------|--------|-----------|------------------|
-| 30x30     | Random | 4.23      | 30s, 100 samples |
-| 100x100   | Random | 27.70     | 30s, 100 samples |
+### Stable Grids (3s, 50 samples)
+
+_Uses fixed seeds to ensure consistent results for cross-run comparisons._
+
+<table>
+<tr><th>Seed: 2210748027404127321</th><th>Seed: 8658502531503517188  </th><th>Seed: 4514647571430385868</th></tr>
+<tr><td>
+
+| Grid Size | Time      |
+|-----------|-----------|
+| 30x30     |   7.15 µs |
+| 100x100   |   8.08 µs |
+| 500x500   |  64.88 µs |
+| 1000x1000 |  11.71 ms |
+
+</td><td>
+
+| Grid Size | Time      |
+|-----------|-----------|
+| 30x30     |   1.18 µs |
+| 100x100   |  40.23 µs |
+| 500x500   |   1.60 ms |
+| 1000x1000 | 932.75 µs |
+
+</td><td>
+
+| Grid Size | Time      |
+|-----------|-----------|
+| 30x30     | 480.84 ns |
+| 100x100   |   1.21 µs |
+| 500x500   |  16.36 µs |
+| 1000x1000 | 219.31 µs |
+
+</td></tr>
+</table>
 
 _Note: Benchmarks run on Intel i9-9900K (16) @ 5.000GHz._
 

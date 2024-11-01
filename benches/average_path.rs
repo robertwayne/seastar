@@ -41,6 +41,7 @@ fn create_test_grid(w: usize, h: usize, seed: u64) -> (Grid, Point, Point) {
 fn bench_grids_stable(c: &mut Criterion, size: usize, name: &str) {
     let mut group = c.benchmark_group(name);
     group.noise_threshold(0.05);
+    group.sample_size(50);
     group.measurement_time(std::time::Duration::from_secs(3));
 
     let test_cases: Vec<_> = SEEDS
@@ -68,6 +69,7 @@ fn bench_grids_unstable(c: &mut Criterion, size: usize, name: &str) {
     let mut group = c.benchmark_group(name);
 
     group.measurement_time(std::time::Duration::from_secs(30));
+    group.sample_size(50);
     group.noise_threshold(0.05);
 
     let mut rng = rand::thread_rng();
@@ -89,8 +91,13 @@ fn bench_grids_unstable(c: &mut Criterion, size: usize, name: &str) {
 fn bench_grids(c: &mut Criterion) {
     bench_grids_stable(c, 30, "30x30 grid/stable");
     bench_grids_stable(c, 100, "100x100 grid/stable");
+    bench_grids_stable(c, 500, "500x500 grid/stable");
+    bench_grids_stable(c, 1000, "1000x1000 grid/stable");
+
     bench_grids_unstable(c, 30, "30x30 grid/unstable");
     bench_grids_unstable(c, 100, "100x100 grid/unstable");
+    bench_grids_unstable(c, 500, "500x500 grid/unstable");
+    bench_grids_unstable(c, 1000, "1000x1000 grid/unstable");
 }
 
 criterion_group!(benches, bench_grids);
