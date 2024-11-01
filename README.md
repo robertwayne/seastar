@@ -1,5 +1,6 @@
 # Seastar
 
+
 <div align="right">
 <a href="https://crates.io/crates/seastar">
     <img src="https://img.shields.io/crates/v/seastar?style=flat-square" alt="crates.io badge">
@@ -8,25 +9,22 @@
     <img src="https://img.shields.io/docsrs/seastar?style=flat-square" alt="docs.rs badge">
 </a>
 </div>
-<br>
-<div align="center">
-    <img src="assets/example.webp" alt="terminal screenshot showing off paths from start to end">
-</div>
 
----
+<br>
 
 `seastar` is a dependency-free implementation of the __[A*
 pathfinding](https://en.wikipedia.org/wiki/A*_search_algorithm)__ algorithm. It
-is specifically designed to operate over unform-cost, 2D grids in cardinal
+is specifically designed to operate over uniform-cost, 2D grids in cardinal
 directions.
 
 You can check out the library in action at
 __[seastar.sombia.com](https://seastar.sombia.com/)__.
 
-I can't necessarily recommend using this over the
-__[pathfinding](https://github.com/samueltardieu/pathfinding)__ crate, but I
-wanted a different API for my own use-case, as well as a deeper understanding of
-the algorithm.
+---
+
+<div align="center">
+    <img src="assets/example.webp" alt="terminal screenshot showing off paths from start to end">
+</div>
 
 ## Usage
 
@@ -39,8 +37,8 @@ use seastar::{astar, Point, Grid};
 
 let grid = Grid::new(3, 3);
 
-let start = Point { x: 0, y: 0 }; // top left corner
-let end = Point { x: 2, y: 2 }; // bottom right corner
+let start = Point::new(0, 0); // top left corner
+let end = Point::new(2, 2); // bottom right corner
 
 // Assuming a path is found, `path` will be a `Vec<Point>` where each point is
 // a step in the path from `start` to `end`.
@@ -59,7 +57,7 @@ command `cargo run --release --example <example_name>`.
 | random_30  | __[random_30.rs](/examples/random_30.rs)__   | Generate a 30x30 map with random walls and a random start and end point.   |
 | random_100 | __[random_100.rs](/examples/random_100.rs)__ | Generate a 100x100 map with random walls and a random start and end point. |
 
-## Features
+## Feature Flags
 
 | Flag    | Default  | Description                                          | Dependencies |
 |---------|----------|------------------------------------------------------|--------------|
@@ -89,7 +87,7 @@ _Uses random seeds to give a better indicator of average execution time._
 _Uses fixed seeds to ensure consistent results for cross-run comparisons._
 
 <table>
-<tr><th>Seed: 2210748027404127321</th><th>Seed: 8658502531503517188  </th><th>Seed: 4514647571430385868</th></tr>
+<tr><th>Seed: 2210748027404127321</th><th>Seed: 8658502531503517188</th><th>Seed: 4514647571430385868</th></tr>
 <tr><td>
 
 | Grid Size | Time      |
@@ -131,6 +129,10 @@ _Note: Benchmarks run on Intel i9-9900K (16) @ 5.000GHz._
 `critcmp before after`
 
 _Requires [critcmp](https://github.com/BurntSushi/critcmp) to be installed._
+
+## Motivation
+
+The full-featured __[pathfinding](https://github.com/samueltardieu/pathfinding)__ crate exists, and should probably be your first choice if you need a pathfinding implementation. However, I wanted to implement the A* algorithm to actually understand how it works, and I desired a simpler API for my game design needs.
 
 ## License
 
