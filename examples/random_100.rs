@@ -1,10 +1,9 @@
 use iridescent::{Styled, GREEN, RED};
 use rand::{thread_rng, Rng};
-use seastar::{astar, Point};
+use seastar::{astar, Grid, Point};
 
-fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
-    let mut grid: Vec<Vec<Option<()>>> = Vec::with_capacity(h);
-
+fn setup(w: usize, h: usize) -> (Grid, Point, Point) {
+    let mut grid = Grid::new(w, h);
     let mut rng = thread_rng();
 
     let start = Point {
@@ -18,34 +17,28 @@ fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
     };
 
     for y in 0..h {
-        let mut row = Vec::with_capacity(w);
         for x in 0..w {
             if rng.gen_bool(0.2) {
-                if x == start.x as usize && y == start.y as usize {
-                    row.push(None);
-                } else if x == end.x as usize && y == end.y as usize {
-                    row.push(None);
+                if x == start.x as usize && y == start.y as usize
+                    || x == end.x as usize && y == end.y as usize
+                {
+                    continue; // Leave as None
                 } else {
-                    row.push(Some(()));
+                    *grid.get_mut(x as isize, y as isize).unwrap() = true;
                 }
-            } else {
-                row.push(None);
             }
         }
-        grid.push(row);
     }
 
     (grid, start, end)
 }
 
-fn draw_grid(grid: &Vec<Vec<Option<()>>>, path: Option<&Vec<Point>>) {
+fn draw_grid(grid: &Grid, path: Option<&Vec<Point>>) {
     if let Some(path) = path {
-        for (y, row) in grid.iter().enumerate() {
-            for (x, cell) in row.iter().enumerate() {
-                if path.contains(&Point {
-                    x: x as isize,
-                    y: y as isize,
-                }) {
+        for y in 0..grid.height() {
+            for x in 0..grid.width() {
+                let point = Point::new(x as isize, y as isize);
+                if path.contains(&point) {
                     if x == path[0].x as usize && y == path[0].y as usize {
                         print!("{}", "S".foreground(RED));
                     } else if x == path[path.len() - 1].x as usize
@@ -55,7 +48,7 @@ fn draw_grid(grid: &Vec<Vec<Option<()>>>, path: Option<&Vec<Point>>) {
                     } else {
                         print!("{}", "o".foreground(GREEN));
                     }
-                } else if cell.is_some() {
+                } else if grid.get(x as isize, y as isize).unwrap() {
                     print!("#");
                 } else {
                     print!("{}", ".".dim());
@@ -64,20 +57,19 @@ fn draw_grid(grid: &Vec<Vec<Option<()>>>, path: Option<&Vec<Point>>) {
             println!();
         }
     } else {
-        for (y, row) in grid.iter().enumerate() {
-            for (x, cell) in row.iter().enumerate() {
-                if cell.is_some() {
+        for y in 0..grid.height() {
+            for x in 0..grid.width() {
+                if grid.get(x as isize, y as isize).unwrap() {
                     print!("#");
+                } else if x == 0 && y == 0 {
+                    print!("{}", "S".foreground(RED));
+                } else if x == grid.width() - 1 && y == grid.height() - 1 {
+                    print!("{}", "E".foreground(RED));
                 } else {
-                    if x == 0 && y == 0 {
-                        print!("{}", "S".foreground(RED));
-                    } else if x == grid[0].len() - 1 && y == grid.len() - 1 {
-                        print!("{}", "E".foreground(RED));
-                    } else {
-                        print!("{}", ".".dim());
-                    }
+                    print!("{}", ".".dim());
                 }
             }
+
             println!();
         }
     }
@@ -90,7 +82,11 @@ fn main() {
     if let Some(path) = astar(&grid, start, end) {
         let elapsed = now.elapsed();
         draw_grid(&grid, Some(&path));
-        println!("Estimated Duration: {:?}", elapsed);
+        println!(
+            "Estimated Duration: {:?} | Path length: {}",
+            elapsed,
+            path.len()
+        );
     } else {
         draw_grid(&grid, None);
         println!("No path found!");

@@ -6,23 +6,20 @@ use std::{
 
 use crate::Point;
 
-/// Represents a node in the grid to be checked. Nodes know their position, and
-/// have a `g` and `h` cost, which are used to calculate the f-cost.
-/// Additionally, each node has a parent node, which is used to reconstruct the
+/// Represents a node in the `Grid` to be checked. Nodes know their position,
+/// and have a `g` and `h` cost, which are used to calculate the f-cost.
+/// Additionally, each node has a parent index, which is used to reconstruct the
 /// path once the end node is found.
 ///
 /// The `g` cost is the distance from the start node to the current node. The
 /// `h` cost is the distance from the current node to the end node. The `f` cost
 /// is the sum of the `g` and `h` costs.
-///
-/// You can access the `g` and `h` costs directly, but the `f` cost is
-/// calculated by calling the `.f()` method.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Node {
     pub point: Point,
     pub g: isize,
     pub h: isize,
-    pub parent: Option<Box<Node>>,
+    pub parent_index: Option<usize>,
 }
 
 impl Node {
@@ -32,7 +29,7 @@ impl Node {
             point: Point::new(x, y),
             g: 0,
             h: 0,
-            parent: None,
+            parent_index: None,
         }
     }
 
@@ -70,11 +67,15 @@ impl PartialOrd for Node {
 }
 
 impl Ord for Node {
+    // This reverses the order of the comparison, so our
+    // `BinaryHeap` will be a min-heap instead of a max-heap.
     fn cmp(&self, other: &Self) -> Ordering {
-        if self.f() == other.f() {
-            other.h.cmp(&self.h)
-        } else {
-            other.f().cmp(&self.f())
+        let self_f = self.g + self.h;
+        let other_f = other.g + other.h;
+
+        match other_f.cmp(&self_f) {
+            Ordering::Equal => other.h.cmp(&self.h),
+            ord => ord,
         }
     }
 }

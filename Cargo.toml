@@ -1,17 +1,17 @@
 [package]
 name = "seastar"
 authors = ["Rob Wagner <rob@sombia.com>"]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-description = "Dependency-free, non-generic implementation of the A* pathfinding algorithm."
+description = "Dependency-free implementation of the A* pathfinding algorithm for uniform-cost, 2D grids in cardinal directions."
 repository = "https://github.com/robertwayne/seastar"
 categories = ["algorithms"]
-keywords = ["a-star", "pathfinding", "astar"]
+keywords = ["pathfinding", "astar"]
 readme = "README.md"
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { version = "1", features = ["derive"], optional = true }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -25,6 +25,9 @@ serde = ["dep:serde"]
 [[bench]]
 name = "average_path"
 harness = false
+
+[lib]
+bench = false
 
 [profile.release]
 opt-level = 3

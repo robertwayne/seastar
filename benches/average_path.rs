@@ -1,55 +1,97 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use seastar::{astar, Point};
+use rand::prelude::*;
+use seastar::{astar, Grid, Point};
 
-fn setup(w: usize, h: usize) -> (Vec<Vec<Option<()>>>, Point, Point) {
-    let mut grid: Vec<Vec<Option<()>>> = Vec::with_capacity(h);
+const SEEDS: [u64; 3] = [
+    2210748027404127321,
+    8658502531503517188,
+    4514647571430385868,
+];
 
-    for i in 0..h {
-        grid.push(Vec::with_capacity(w));
-        for j in 0..w {
-            let rnd = rand::random::<u32>() % 100;
-            if i == 0 && j == 0 {
-                grid[i].push(None);
-                continue;
-            }
+fn create_test_grid(w: usize, h: usize, seed: u64) -> (Grid, Point, Point) {
+    let mut rng = StdRng::seed_from_u64(seed);
+    let mut grid = Grid::new(w, h);
 
-            if i == h - 1 && j == w - 1 {
-                grid[i].push(None);
-                continue;
-            }
+    let start = Point {
+        x: rng.gen_range(0..w as isize),
+        y: rng.gen_range(0..h as isize),
+    };
 
-            if rnd < 10 {
-                grid[i].push(Some(()));
-            } else {
-                grid[i].push(None);
+    let end = Point {
+        x: rng.gen_range(0..w as isize),
+        y: rng.gen_range(0..h as isize),
+    };
+
+    let is_endpoint = |x, y| {
+        (x == start.x as usize && y == start.y as usize)
+            || (x == end.x as usize && y == end.y as usize)
+    };
+
+    for y in 0..h {
+        for x in 0..w {
+            if rng.gen_bool(0.2) && !is_endpoint(x, y) {
+                *grid.get_mut(x as isize, y as isize).unwrap() = true;
             }
         }
     }
 
-    let start = Point { x: 0, y: 0 };
-    let end = Point {
-        x: h as isize - 1,
-        y: w as isize - 1,
-    };
-
     (grid, start, end)
 }
 
-fn very_small_grid(c: &mut Criterion) {
-    let (grid, start, end) = setup(30, 30);
-    let mut group = c.benchmark_group("average path");
-    group.sample_size(1000);
+fn bench_grids_stable(c: &mut Criterion, size: usize, name: &str) {
+    let mut group = c.benchmark_group(name);
+    group.noise_threshold(0.05);
+    group.measurement_time(std::time::Duration::from_secs(3));
 
-    group.bench_function("astar 30x30", |b| b.iter(|| astar(&grid, start, end)));
+    let test_cases: Vec<_> = SEEDS
+        .map(|seed| create_test_grid(size, size, seed))
+        .into_iter()
+        .collect();
+
+    for (i, (grid, start, end)) in test_cases.iter().enumerate() {
+        group.bench_with_input(
+            format!("seed {}", SEEDS[i]),
+            &(&grid, start, end),
+            |b, input| {
+                b.iter(|| {
+                    let (grid, start, end) = input;
+                    astar(grid, **start, **end)
+                })
+            },
+        );
+    }
+
+    group.finish();
 }
 
-fn small_grid(c: &mut Criterion) {
-    let (grid, start, end) = setup(100, 100);
-    let mut group = c.benchmark_group("average path");
-    group.sample_size(100);
+fn bench_grids_unstable(c: &mut Criterion, size: usize, name: &str) {
+    let mut group = c.benchmark_group(name);
 
-    group.bench_function("astar 100x100", |b| b.iter(|| astar(&grid, start, end)));
+    group.measurement_time(std::time::Duration::from_secs(30));
+    group.noise_threshold(0.05);
+
+    let mut rng = rand::thread_rng();
+
+    group.bench_function("randomseeds", |b| {
+        b.iter_batched(
+            || {
+                let seed = rng.gen::<u64>();
+                create_test_grid(size, size, seed)
+            },
+            |(grid, start, end)| astar(&grid, start, end),
+            criterion::BatchSize::LargeInput,
+        )
+    });
+
+    group.finish();
 }
 
-criterion_group!(benches, very_small_grid, small_grid);
+fn bench_grids(c: &mut Criterion) {
+    bench_grids_stable(c, 30, "30x30 grid/stable");
+    bench_grids_stable(c, 100, "100x100 grid/stable");
+    bench_grids_unstable(c, 30, "30x30 grid/unstable");
+    bench_grids_unstable(c, 100, "100x100 grid/unstable");
+}
+
+criterion_group!(benches, bench_grids);
 criterion_main!(benches);
