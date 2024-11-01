@@ -33,7 +33,7 @@ impl Grid {
         Self {
             width,
             height,
-            nodes: nodes,
+            nodes,
         }
     }
 
