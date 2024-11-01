@@ -5,7 +5,7 @@ use crate::Point;
 pub struct Grid {
     width: usize,
     height: usize,
-    cells: Vec<bool>,
+    nodes: Vec<bool>,
 }
 
 impl Grid {
@@ -14,7 +14,7 @@ impl Grid {
         Self {
             width,
             height,
-            cells: vec![false; width * height],
+            nodes: vec![false; width * height],
         }
     }
 
@@ -24,16 +24,16 @@ impl Grid {
     pub fn from_2d(grid: Vec<Vec<bool>>) -> Self {
         let height = grid.len();
         let width = grid.first().map_or(0, Vec::len);
-        let mut cells = Vec::with_capacity(width * height);
+        let mut nodes = Vec::with_capacity(width * height);
 
         for row in grid {
-            cells.extend(row);
+            nodes.extend(row);
         }
 
         Self {
             width,
             height,
-            cells,
+            nodes: nodes,
         }
     }
 
@@ -49,7 +49,7 @@ impl Grid {
         self.height
     }
 
-    /// Returns the index of the cell at (x, y) coordinates.
+    /// Returns the index of the node at (x, y) coordinates.
     #[inline]
     #[must_use]
     pub fn index(&self, x: isize, y: isize) -> Option<usize> {
@@ -60,21 +60,21 @@ impl Grid {
         }
     }
 
-    /// Returns the value of the cell at (x, y) coordinates.
+    /// Returns the value of the node at (x, y) coordinates.
     #[must_use]
     pub fn get(&self, x: isize, y: isize) -> Option<bool> {
-        self.index(x, y).map(|i| self.cells[i])
+        self.index(x, y).map(|i| self.nodes[i])
     }
 
-    /// Returns a mutable reference to the cell at (x, y) coordinates.
+    /// Returns a mutable reference to the node at (x, y) coordinates.
     #[must_use]
     pub fn get_mut(&mut self, x: isize, y: isize) -> Option<&mut bool> {
-        self.index(x, y).map(|i| &mut self.cells[i])
+        self.index(x, y).map(|i| &mut self.nodes[i])
     }
 
-    /// Returns whether the cell at a given `Point` is walkable.
+    /// Returns whether the node at a given `Point` is walkable.
     #[must_use]
     pub fn is_walkable(&self, point: Point) -> bool {
-        self.get(point.x, point.y).map_or(false, |cell| !cell)
+        self.get(point.x, point.y).map_or(false, |node| !node)
     }
 }

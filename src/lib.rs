@@ -17,7 +17,7 @@ pub fn astar(grid: &Grid, start: Point, end: Point) -> Option<Vec<Point>> {
     let height = grid.height();
     let capacity = width * height;
 
-    let mut open_nodes = BinaryHeap::new();
+    let mut open_nodes = BinaryHeap::new(); // Min-heap; see `Node` impl
     let mut closed_nodes = vec![false; capacity];
     let mut g_scores = vec![u16::MAX; capacity];
     let mut all_nodes = Vec::with_capacity(capacity);
@@ -114,6 +114,7 @@ fn manhattan_distance(a: &Point, b: &Point) -> isize {
     (a.x - b.x).abs() + (a.y - b.y).abs()
 }
 
+// TODO: Support diagonal movement?
 const NEIGHBORS: [(isize, isize); 4] = [(0, 1), (1, 0), (0, -1), (-1, 0)];
 
 fn get_neighbor_points(grid: &Grid, point: Point) -> impl Iterator<Item = Point> + '_ {
@@ -121,7 +122,7 @@ fn get_neighbor_points(grid: &Grid, point: Point) -> impl Iterator<Item = Point>
         let new_x = point.x + dx;
         let new_y = point.y + dy;
         grid.get(new_x, new_y)
-            .filter(|&cell| !cell)
+            .filter(|&node| !node)
             .map(|_| Point::new(new_x, new_y))
     })
 }
