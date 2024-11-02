@@ -1,9 +1,13 @@
 # Changelog
 
+## 2024.11.02 - v0.3.1
+
+- Exposed a `Grid::set` method to allow modifying the state of a node at a given position.
+
 ## 2024.11.01 - v0.3.0
 
 - Rewrote core algorithm to avoid unnecessary heap allocations, boxed references in `Node`s, and better backing data structures for node sets. In general, the performance improvements were multiple orders of magnitude faster - particularly on larger grids.
-- Modified `Grid` to use a `Vec<bool>` for cells instead of `Vec<Option<()>>`. 
+- Modified `Grid` to use a `Vec<bool>` for nodes instead of `Vec<Option<()>>`. 
 
 ## 2023.03.27 - v0.2.0
 
