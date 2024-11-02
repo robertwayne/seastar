@@ -74,7 +74,9 @@ impl Grid {
 
     /// Sets the value of the node at (x, y) coordinates.
     pub fn set(&mut self, x: isize, y: isize, value: bool) {
-        self.index(x, y).map(|i| self.nodes[i] = value);
+        if let Some(i) = self.index(x, y) {
+            self.nodes[i] = value;
+        }
     }
 
     /// Returns whether the node at a given `Point` is walkable.
