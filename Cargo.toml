@@ -1,7 +1,7 @@
 [package]
 name = "seastar"
 authors = ["Rob Wagner <rob@sombia.com>"]
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Dependency-free implementation of the A* pathfinding algorithm for uniform-cost, 2D grids in cardinal directions."
